@@ -251,8 +251,8 @@ def main(args):
     envconfig = gym_auv.SCENARIOS[env_name]['config'] if env_name in gym_auv.SCENARIOS else {}  
     envconfig.update(custom_envconfig)
 
-    #NUM_CPU = multiprocessing.cpu_count()
-    NUM_CPU = 8
+    NUM_CPU = multiprocessing.cpu_count()
+    # NUM_CPU = 8
 
     EXPERIMENT_ID = str(int(time())) + args.algo.lower()
     model = {
@@ -284,7 +284,7 @@ def main(args):
         play_scenario(env, recorded_env, args, agent=agent)
         recorded_env.env.close()
 
-    elif (args.mode == 'enjoy'):
+    elif args.mode == 'enjoy':
         agent = model.load(args.agent)
 
         figure_folder = os.path.join(DIR_PATH, 'logs', 'enjoys', args.env, EXPERIMENT_ID)
@@ -326,7 +326,7 @@ def main(args):
                 ep_number += 1
         recorded_env.close()
 
-    elif (args.mode == 'train'):
+    elif args.mode == 'train':
         figure_folder = os.path.join(DIR_PATH, 'logs', 'figures', args.env, EXPERIMENT_ID)
         os.makedirs(figure_folder, exist_ok=True)
         scenario_folder = os.path.join(figure_folder, 'scenarios')
@@ -345,7 +345,7 @@ def main(args):
         else:
             num_cpu = NUM_CPU
             vec_env = SubprocVecEnv([make_mp_env(env_id, i, envconfig, pilot=args.pilot) for i in range(num_cpu)]) 
-
+        
         if (args.agent is not None):
             agent = model.load(args.agent)
             agent.set_env(vec_env)
@@ -580,14 +580,14 @@ def main(args):
         
             n_episodes = report_env.episode
             n_updates += 1
-        
+
         agent.learn(
-            total_timesteps=1500000, 
+            total_timesteps=1500000, # 3000000
             tb_log_name='log',
             callback=callback
         )
 
-    elif (args.mode in ['policyplot', 'vectorfieldplot', 'streamlinesplot']):
+    elif args.mode in ['policyplot', 'vectorfieldplot', 'streamlinesplot']:
         figure_folder = os.path.join(DIR_PATH, 'logs', 'plots', args.env, EXPERIMENT_ID)
         os.makedirs(figure_folder, exist_ok=True)
         agent = PPO2.load(args.agent)
@@ -773,6 +773,8 @@ def main(args):
 
         if args.video and active_env:
             active_env.close()
+    
+    print("---------------EXIT MAIN-------------------")
 
 if __name__ == '__main__':
     print("WARNING: DETERMINISTIC SEED ACTIVATED")

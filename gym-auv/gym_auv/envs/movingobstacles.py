@@ -78,7 +78,7 @@ class MovingObstaclesNoRules(MovingObstacles):
     def __init__(self, *args, **kwargs):
         self._n_moving_obst = 17
         self._n_static_obst = 11
-        self._rewarder_class = PathRewarder  # ColavRewarder
+        self._rewarder_class = ColavRewarder  # PathRewarder
         super().__init__(*args, **kwargs)
 
 class MovingObstaclesColreg(MovingObstacles):

@@ -7,6 +7,7 @@ from gym_auv.objects.rewarder import ColavRewarder, PathRewarder
 import gym_auv.rendering.render2d as render2d
 import gym_auv.rendering.render3d as render3d
 from abc import ABC, abstractmethod
+from typing import List
 
 class BaseEnvironment(gym.Env, ABC):
     """Creates an environment with a vessel and a path."""
@@ -177,7 +178,7 @@ class BaseEnvironment(gym.Env, ABC):
         obs = np.concatenate([reward_insight, navigation_states, sector_closenesses, sector_velocities])
         return obs
 
-    def step(self, action:list) -> (np.ndarray, float, bool, dict):
+    def step(self, action:list, obstacles_action:List[List]) -> (np.ndarray, float, bool, dict):
         """
         Steps the environment by one timestep. Returns observation, reward, done, info.
 
@@ -202,7 +203,7 @@ class BaseEnvironment(gym.Env, ABC):
         if np.isnan(action).any(): action = np.zeros(action.shape)
 
         # If the environment is dynamic, calling self.update will change it.
-        self._update()
+        self._update(obstacles_action)
 
         # Updating vessel state from its dynamics model
         self.vessel.step(action)
@@ -243,9 +244,16 @@ class BaseEnvironment(gym.Env, ABC):
             self.cumulative_reward < self.config["min_cumulative_reward"] and not self.test_mode
         ])
 
-    def _update(self) -> None:
-        """Updates the environment at each time-step. Can be customized in sub-classes."""
-        [obst.update(dt=self.config["t_step_size"]) for obst in self.obstacles if not obst.static]
+    def _update(self, obstacles_action:List[List]) -> None:
+        """
+        Updates the environment at each time-step. Can be customized in sub-classes.
+        
+        Parameters
+        ----------
+        obstacles_action : np.ndarray[np.ndarray[thrust_input, torque_input]]
+        """
+        # [obst.update(dt=self.config["t_step_size"]) for obst in self.obstacles if not obst.static]
+        [obst.update(action=obstacles_action[i]) for i, obst in enumerate(self.obstacles) if not obst.static]
 
     @abstractmethod
     def _generate(self) -> None:    

@@ -4,7 +4,7 @@ import gym_auv.utils.geomutils as geom
 import gym_auv.utils.helpers as helpers
 from gym_auv.objects.vessel import Vessel
 from gym_auv.objects.path import RandomCurveThroughOrigin, Path
-from gym_auv.objects.obstacles import PolygonObstacle, VesselObstacle, CircularObstacle
+from gym_auv.objects.obstacles import PolygonObstacle, VesselObstacle, CircularObstacle, AdversarialVesselObstacle
 from gym_auv.environment import BaseEnvironment
 from gym_auv.objects.rewarder import ColavRewarder, ColregRewarder, PathRewarder
 import shapely.geometry, shapely.errors
@@ -60,7 +60,8 @@ class MovingObstacles(BaseEnvironment):
                     obst_position[0] + i*obst_speed*np.cos(obst_direction), 
                     obst_position[1] + i*obst_speed*np.sin(obst_direction)
                 )))
-            other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
+            # other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
+            other_vessel_obstacle = AdversarialVesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
 
             self.obstacles.append(other_vessel_obstacle)
 
@@ -72,7 +73,10 @@ class MovingObstacles(BaseEnvironment):
             obstacle = CircularObstacle(*helpers.generate_obstacle(self.rng, self.path, self.vessel, displacement_dist_std=self.displacement_dist_std))
             self.obstacles.append(obstacle)
         
-        self._update()
+        obstacles_action = []
+        for _ in range(self._n_moving_obst):
+            obstacles_action.append([0,0])
+        self._update(obstacles_action)
 
 class MovingObstaclesNoRules(MovingObstacles):
     def __init__(self, *args, **kwargs):

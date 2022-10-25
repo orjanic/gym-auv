@@ -198,7 +198,6 @@ class BaseEnvironment(gym.Env, ABC):
         info : dict
             Dictionary with data used for reporting or debugging
         """
-
         action[0] = (action[0] + 1)/2 # Done to be compatible with RL algorithms that require symmetric action spaces
         if np.isnan(action).any(): action = np.zeros(action.shape)
 

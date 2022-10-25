@@ -251,8 +251,9 @@ def main(args):
     envconfig = gym_auv.SCENARIOS[env_name]['config'] if env_name in gym_auv.SCENARIOS else {}  
     envconfig.update(custom_envconfig)
 
-    NUM_CPU = multiprocessing.cpu_count()
+    # NUM_CPU = multiprocessing.cpu_count()
     # NUM_CPU = 8
+    NUM_CPU = 1
 
     EXPERIMENT_ID = str(int(time())) + args.algo.lower()
     model = {
@@ -774,7 +775,6 @@ def main(args):
         if args.video and active_env:
             active_env.close()
     
-    print("---------------EXIT MAIN-------------------")
 
 if __name__ == '__main__':
     print("WARNING: DETERMINISTIC SEED ACTIVATED")

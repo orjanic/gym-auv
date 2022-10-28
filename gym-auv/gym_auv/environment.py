@@ -81,6 +81,8 @@ class BaseEnvironment(gym.Env, ABC):
             dtype=np.float32
         )
 
+        self.adversarial = False
+
         # Initializing rendering
         self._viewer2d = None
         self._viewer3d = None
@@ -178,7 +180,7 @@ class BaseEnvironment(gym.Env, ABC):
         obs = np.concatenate([reward_insight, navigation_states, sector_closenesses, sector_velocities])
         return obs
 
-    def step(self, action:list, obstacles_action:List[List]) -> (np.ndarray, float, bool, dict):
+    def step(self, action:list) -> (np.ndarray, float, bool, dict):
         """
         Steps the environment by one timestep. Returns observation, reward, done, info.
 
@@ -202,7 +204,7 @@ class BaseEnvironment(gym.Env, ABC):
         if np.isnan(action).any(): action = np.zeros(action.shape)
 
         # If the environment is dynamic, calling self.update will change it.
-        self._update(obstacles_action)
+        self._update(obstacles_action=action[2:])
 
         # Updating vessel state from its dynamics model
         self.vessel.step(action)
@@ -243,16 +245,18 @@ class BaseEnvironment(gym.Env, ABC):
             self.cumulative_reward < self.config["min_cumulative_reward"] and not self.test_mode
         ])
 
-    def _update(self, obstacles_action:List[List]) -> None:
+    def _update(self, obstacles_action:list) -> None:
         """
         Updates the environment at each time-step. Can be customized in sub-classes.
         
         Parameters
         ----------
-        obstacles_action : np.ndarray[np.ndarray[thrust_input, torque_input]]
+        obstacles_action : np.ndarray[thrust_input, torque_input]*self._n_moving_obst
         """
-        # [obst.update(dt=self.config["t_step_size"]) for obst in self.obstacles if not obst.static]
-        [obst.update(action=obstacles_action[i]) for i, obst in enumerate(self.obstacles) if not obst.static]
+        if self.adversarial:
+            [obst.update(action=obstacles_action[2*i:2*i+2]) for i, obst in enumerate(self.obstacles) if not obst.static]
+        else:
+            [obst.update(dt=self.config["t_step_size"]) for obst in self.obstacles if not obst.static]
 
     @abstractmethod
     def _generate(self) -> None:    

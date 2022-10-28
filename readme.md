@@ -40,6 +40,10 @@ python run.py play TestScenario1-v0
 Train a PPO agent in the MovingObstaclesNoRules environment.
 ```
 python run.py train MovingObstaclesNoRules-v0
+```
+Train a PPO agent in the AdversarialObstaclesNoRules environment.
+```
+python run.py train AdversarialObstaclesNoRules-v0
 ``` 
 Record a video of a trained policy acting in an environment.
 ```

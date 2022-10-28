@@ -55,19 +55,10 @@ class BaseObstacle(ABC):
         sensors' detection of the obstacle instance."""
         return self._init_boundary
 
-    # def update(self, dt:float) -> None:
-    #     """Updates the obstacle according to its dynamic behavior, e.g. 
-    #     a ship model and recalculates the boundary."""
-    #     has_changed = self._update(dt)
-    #     if has_changed:
-    #         self._boundary = self._calculate_boundary()
-    #         if not self._boundary.is_valid:
-    #             self._boundary = self._boundary.buffer(0)
-
-    def update(self, action:list) -> None:
+    def update(self, dt:float) -> None:
         """Updates the obstacle according to its dynamic behavior, e.g. 
         a ship model and recalculates the boundary."""
-        has_changed = self._update(action)
+        has_changed = self._update(dt)
         if has_changed:
             self._boundary = self._calculate_boundary()
             if not self._boundary.is_valid:
@@ -155,7 +146,7 @@ class VesselObstacle(BaseObstacle):
             for _ in range(cur_t, next_t):
                 self.trajectory_velocities.append((dx, dy))
             
-            i+= 1
+            i += 1
 
         self.waypoint_counter = 0
         self.points = [
@@ -277,6 +268,15 @@ class AdversarialVesselObstacle(BaseObstacle):
 
         if init_update:
             self.update(action=[0, 0])
+    
+    def update(self, action:list) -> None:
+        """Updates the obstacle according to its dynamic behavior, e.g. 
+        a ship model and recalculates the boundary."""
+        has_changed = self._update(action)
+        if has_changed:
+            self._boundary = self._calculate_boundary()
+            if not self._boundary.is_valid:
+                self._boundary = self._boundary.buffer(0)
 
     def _update(self, action:list):
         """

@@ -1,5 +1,6 @@
 import numpy as np
 
+import gym
 import gym_auv.utils.geomutils as geom
 import gym_auv.utils.helpers as helpers
 from gym_auv.objects.vessel import Vessel
@@ -60,7 +61,70 @@ class MovingObstacles(BaseEnvironment):
                     obst_position[0] + i*obst_speed*np.cos(obst_direction), 
                     obst_position[1] + i*obst_speed*np.sin(obst_direction)
                 )))
-            # other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
+            other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
+
+            self.obstacles.append(other_vessel_obstacle)
+
+        # Adding static obstacles
+        if not hasattr(self,'displacement_dist_std'):
+            self.displacement_dist_std = 250
+
+        for _ in range(self._n_static_obst):
+            obstacle = CircularObstacle(*helpers.generate_obstacle(self.rng, self.path, self.vessel, displacement_dist_std=self.displacement_dist_std))
+            self.obstacles.append(obstacle)
+
+class AdversarialObstacles(BaseEnvironment):
+
+    def __init__(self, *args, **kwargs) -> None:
+        """
+        Sets following parameters for the scenario before calling super init. method:
+            self._n_moving_obst : Number of moving obstacles
+            self._n_static_obst : Number of static obstacles
+            self._rewarder_class : Rewarder used, e.g. ColavRewarder, ColregRewarder
+        """
+        self.adversarial = True
+        
+        self._action_space = gym.spaces.Box(
+            low=np.array([-1, -1]*(1 + self._n_moving_obst)),
+           	high=np.array([1, 1]*(1 + self._n_moving_obst)),
+            dtype=np.float32
+        )
+
+        super().__init__(*args, **kwargs)
+
+    def _generate(self):
+        # Initializing path
+        if not hasattr(self, '_n_waypoints'):
+            self._n_waypoints = int(np.floor(4*self.rng.rand() + 2))
+
+        self.path = RandomCurveThroughOrigin(self.rng, self._n_waypoints, length=800)
+
+        # Initializing vessel
+        init_state = self.path(0)
+        init_angle = self.path.get_direction(0)
+        init_state[0] += 50*(self.rng.rand()-0.5)
+        init_state[1] += 50*(self.rng.rand()-0.5)
+        init_angle = geom.princip(init_angle + 2*np.pi*(self.rng.rand()-0.5))
+        self.vessel = Vessel(self.config, np.hstack([init_state, init_angle]), width=self.config["vessel_width"])
+        prog = 0
+        self.path_prog_hist = np.array([prog])
+        self.max_path_prog = prog
+        
+        self.obstacles = []
+
+        # Adding moving obstacles
+        for _ in range(self._n_moving_obst):
+            other_vessel_trajectory = []
+
+            obst_position, obst_radius = helpers.generate_obstacle(self.rng, self.path, self.vessel, obst_radius_mean=10, displacement_dist_std=500)
+            obst_direction = self.rng.rand()*2*np.pi
+            obst_speed = np.random.choice(vessel_speed_vals, p=vessel_speed_density)
+
+            for i in range(10000):
+                other_vessel_trajectory.append((i, (
+                    obst_position[0] + i*obst_speed*np.cos(obst_direction), 
+                    obst_position[1] + i*obst_speed*np.sin(obst_direction)
+                )))
             other_vessel_obstacle = AdversarialVesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
 
             self.obstacles.append(other_vessel_obstacle)
@@ -73,9 +137,7 @@ class MovingObstacles(BaseEnvironment):
             obstacle = CircularObstacle(*helpers.generate_obstacle(self.rng, self.path, self.vessel, displacement_dist_std=self.displacement_dist_std))
             self.obstacles.append(obstacle)
         
-        obstacles_action = []
-        for _ in range(self._n_moving_obst):
-            obstacles_action.append([0,0])
+        obstacles_action = [[0,0]]*self._n_moving_obst
         self._update(obstacles_action)
 
 class MovingObstaclesNoRules(MovingObstacles):
@@ -92,6 +154,12 @@ class MovingObstaclesColreg(MovingObstacles):
         self._rewarder_class = ColregRewarder
         super().__init__(*args, **kwargs)
 
+class AdversarialObstaclesNoRules(AdversarialObstacles):
+    def __init__(self, *args, **kwargs):
+        self._n_moving_obst = 1
+        self._n_static_obst = 11
+        self._rewarder_class = ColavRewarder
+        super().__init__(*args, **kwargs)
 
 ########################################### THOMAS' CUSTOM ENVS ########################################################
 class Env0(MovingObstacles):

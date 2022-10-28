@@ -245,7 +245,7 @@ class BaseEnvironment(gym.Env, ABC):
 
     def _update(self) -> None:
         """Updates the environment at each time-step. Can be customized in sub-classes."""
-        [obst.update(dt=self.config["t_step_size"]) for obst in self.obstacles if not obst.static]
+        [obst.update(dt=self.config["t_step_size"], agent_position=self.vessel._state[0:2]) for obst in self.obstacles if not obst.static]
 
     @abstractmethod
     def _generate(self) -> None:    

@@ -30,10 +30,10 @@ class BaseObstacle(ABC):
         sensors' detection of the obstacle instance."""
         return self._init_boundary
 
-    def update(self, dt:float) -> None:
+    def update(self, dt:float, agent_position) -> None:
         """Updates the obstacle according to its dynamic behavior, e.g. 
         a ship model and recalculates the boundary."""
-        has_changed = self._update(dt)
+        has_changed = self._update(dt, agent_position)
         if has_changed:
             self._boundary = self._calculate_boundary()
             if not self._boundary.is_valid:
@@ -102,12 +102,15 @@ class LineObstacle(BaseObstacle):
         return shapely.geometry.LineString(self.points)
 
 class VesselObstacle(BaseObstacle):
-    def _setup(self, width, trajectory, init_position=None, init_heading=None, init_update=True, name=''):
+    def _setup(self, width, trajectory, init_position=None, init_heading=None, init_update=True, straight_line=True, epsilon=1.0, name=''):
         self.static = False
         self.width = width
         self.trajectory = trajectory
         self.trajectory_velocities = []
         self.name = name
+        self.straight_line = straight_line
+        self.epsilon = epsilon
+
         i = 0
         while i < len(trajectory)-1:
             cur_t = trajectory[i][0]
@@ -121,8 +124,8 @@ class VesselObstacle(BaseObstacle):
             for _ in range(cur_t, next_t):
                 self.trajectory_velocities.append((dx, dy))
             
-            i+= 1
-
+            i += 1
+        
         self.waypoint_counter = 0
         self.points = [
             (-self.width/2, -self.width/2),
@@ -149,9 +152,9 @@ class VesselObstacle(BaseObstacle):
             #self.heading = np.pi/2  # THOMAS 06.08.21 -- FIX VESSEL HEADINGS ON TRAJECORY PLOTS
 
         if init_update:
-            self.update(dt=0.1)
+            self.update(dt=0.1, agent_position=None)
 
-    def _update(self, dt):
+    def _update(self, dt, agent_position):
         self.waypoint_counter += dt
 
         index = int(np.floor(self.waypoint_counter))
@@ -161,11 +164,20 @@ class VesselObstacle(BaseObstacle):
             index = 0
             self.position = np.array(self.trajectory[0][1])
 
-        dx = self.trajectory_velocities[index][0]
-        dy = self.trajectory_velocities[index][1]
-
-        self.dx = dt*dx
-        self.dy = dt*dy
+        if self.straight_line or agent_position == None:
+            dx = self.trajectory_velocities[index][0]
+            dy = self.trajectory_velocities[index][1]
+            self.dx = dt*dx
+            self.dy = dt*dy
+        else:
+            # Epsilon-Greedy direction selection
+            p = np.random.random()
+            if p < self.epsilon:
+                pass # Keep the same direction as previously
+            else:
+                self.dx = agent_position[0] - self.position[0]
+                self.dy = agent_position[1] - self.position[1]
+            
         self.heading = geom.princip(np.arctan2(self.dy, self.dx))
         self.position = self.position + np.array([self.dx, self.dy])
         self._prev_position.append(self.position)

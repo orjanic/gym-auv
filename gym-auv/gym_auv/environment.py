@@ -38,6 +38,7 @@ class BaseEnvironment(gym.Env, ABC):
             self._rewarder_class = PathRewarder # ColavRewarder
             self._n_moving_obst = 10
             self._n_moving_stat = 10
+            self.straight_line = True
         
         self.test_mode = test_mode
         self.render_mode = render_mode

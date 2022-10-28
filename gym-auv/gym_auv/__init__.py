@@ -124,6 +124,10 @@ SCENARIOS = {
         'entry_point': 'gym_auv.envs:MovingObstaclesNoRules',
         'config': MOVING_CONFIG
     },
+    'SmartObstaclesNoRules-v0': {
+        'entry_point': 'gym_auv.envs:SmartObstaclesNoRules',
+        'config': MOVING_CONFIG
+    },
     'MovingObstaclesColreg-v0': {
         'entry_point': 'gym_auv.envs:MovingObstaclesColreg',
         'config': MOVING_CONFIG

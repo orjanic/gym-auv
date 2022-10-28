@@ -60,7 +60,7 @@ class MovingObstacles(BaseEnvironment):
                     obst_position[0] + i*obst_speed*np.cos(obst_direction), 
                     obst_position[1] + i*obst_speed*np.sin(obst_direction)
                 )))
-            other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
+            other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory, straight_line=self.straight_line)
 
             self.obstacles.append(other_vessel_obstacle)
 
@@ -79,6 +79,14 @@ class MovingObstaclesNoRules(MovingObstacles):
         self._n_moving_obst = 17
         self._n_static_obst = 11
         self._rewarder_class = ColavRewarder  # PathRewarder
+        super().__init__(*args, **kwargs)
+
+class SmartObstaclesNoRules(MovingObstacles):
+    def __init__(self, *args, **kwargs):
+        self.straight_line = False
+        self._n_moving_obst = 17
+        self._n_static_obst = 11
+        self._rewarder_class = ColavRewarder
         super().__init__(*args, **kwargs)
 
 class MovingObstaclesColreg(MovingObstacles):

@@ -164,7 +164,7 @@ class VesselObstacle(BaseObstacle):
             index = 0
             self.position = np.array(self.trajectory[0][1])
 
-        if self.straight_line or agent_position == None:
+        if self.straight_line or not isinstance(agent_position, np.ndarray):
             dx = self.trajectory_velocities[index][0]
             dy = self.trajectory_velocities[index][1]
             self.dx = dt*dx

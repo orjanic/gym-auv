@@ -41,6 +41,10 @@ Train a PPO agent in the MovingObstaclesNoRules environment.
 ```
 python run.py train MovingObstaclesNoRules-v0
 ``` 
+Train a PPO agent in the SmartObstaclesNoRules environment.
+```
+python run.py train SmartObstaclesNoRules-v0
+``` 
 Record a video of a trained policy acting in an environment.
 ```
 python run.py enjoy MovingObstaclesNoRules-v0 --algo <default:ppo> --agent path\to\agent.pkl

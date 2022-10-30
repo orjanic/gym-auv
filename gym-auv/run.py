@@ -251,9 +251,9 @@ def main(args):
     envconfig = gym_auv.SCENARIOS[env_name]['config'] if env_name in gym_auv.SCENARIOS else {}  
     envconfig.update(custom_envconfig)
 
-    # NUM_CPU = multiprocessing.cpu_count()
+    NUM_CPU = multiprocessing.cpu_count()
     # NUM_CPU = 8
-    NUM_CPU = 1
+    # NUM_CPU = 1
 
     EXPERIMENT_ID = str(int(time())) + args.algo.lower()
     model = {
@@ -583,7 +583,7 @@ def main(args):
             n_updates += 1
 
         agent.learn(
-            total_timesteps=1500000, # 3000000
+            total_timesteps=3000000,
             tb_log_name='log',
             callback=callback
         )

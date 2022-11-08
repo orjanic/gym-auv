@@ -685,8 +685,12 @@ def main(args):
                     active_env.render()
                 t_steps += 1
                 cumulative_reward += reward[0]
-                report_msg = '{:<20}{:<20}{:<20.2f}{:<20.2%}{:0.1f}fps\r'.format(
-                    id, t_steps, cumulative_reward, info[0]['progress'], 1/(time() - start_time))
+                try:
+                    report_msg = '{:<20}{:<20}{:<20.2f}{:<20.2%}{:0.1f}fps\r'.format(
+                        id, t_steps, cumulative_reward, info[0]['progress'], 1/(time() - start_time))
+                except ZeroDivisionError:
+                    report_msg = '{:<20}{:<20}{:<20.2f}{:<20.2%}{:0.1f}fps\r'.format(
+                        id, t_steps, cumulative_reward, info[0]['progress'], 0)
                 sys.stdout.write(report_msg)
                 sys.stdout.flush()
 
@@ -775,8 +779,6 @@ def main(args):
         if args.video and active_env:
             active_env.close()
     
-    print("---------------EXIT MAIN-------------------")
-
 if __name__ == '__main__':
     print("WARNING: DETERMINISTIC SEED ACTIVATED")
     parser = argparse.ArgumentParser()

@@ -20,6 +20,7 @@ class MovingObstacles(BaseEnvironment):
     def __init__(self, *args, **kwargs) -> None:
         """
         Sets following parameters for the scenario before calling super init. method:
+            self._n_smart_obst : Number of smart obstacles
             self._n_moving_obst : Number of moving obstacles
             self._n_static_obst : Number of static obstacles
             self._rewarder_class : Rewarder used, e.g. ColavRewarder, ColregRewarder
@@ -46,9 +47,9 @@ class MovingObstacles(BaseEnvironment):
         self.max_path_prog = prog
         
         self.obstacles = []
-
-        # Adding moving obstacles
-        for _ in range(self._n_moving_obst):
+        
+        # Adding smart and moving obstacles
+        for obst in range(self._n_smart_obst + self._n_moving_obst):
             other_vessel_trajectory = []
 
             obst_position, obst_radius = helpers.generate_obstacle(self.rng, self.path, self.vessel, obst_radius_mean=10, displacement_dist_std=500)
@@ -60,7 +61,11 @@ class MovingObstacles(BaseEnvironment):
                     obst_position[0] + i*obst_speed*np.cos(obst_direction), 
                     obst_position[1] + i*obst_speed*np.sin(obst_direction)
                 )))
-            other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory, straight_line=self.straight_line)
+            
+            if obst < self._n_smart_obst:
+                other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory, straight_line=False)
+            else:
+                other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
 
             self.obstacles.append(other_vessel_obstacle)
 
@@ -76,6 +81,7 @@ class MovingObstacles(BaseEnvironment):
 
 class MovingObstaclesNoRules(MovingObstacles):
     def __init__(self, *args, **kwargs):
+        self._n_smart_obst = 0
         self._n_moving_obst = 17
         self._n_static_obst = 11
         self._rewarder_class = ColavRewarder  # PathRewarder
@@ -83,8 +89,8 @@ class MovingObstaclesNoRules(MovingObstacles):
 
 class SmartObstaclesNoRules(MovingObstacles):
     def __init__(self, *args, **kwargs):
-        self.straight_line = False
-        self._n_moving_obst = 17
+        self._n_smart_obst = 7
+        self._n_moving_obst = 10
         self._n_static_obst = 11
         self._rewarder_class = ColavRewarder
         super().__init__(*args, **kwargs)

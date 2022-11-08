@@ -36,9 +36,9 @@ class BaseEnvironment(gym.Env, ABC):
 
         if not hasattr(self, '_rewarder_class'):
             self._rewarder_class = PathRewarder # ColavRewarder
+            self._n_smart_obst = 0
             self._n_moving_obst = 10
             self._n_moving_stat = 10
-            self.straight_line = True
         
         self.test_mode = test_mode
         self.render_mode = render_mode
@@ -246,7 +246,7 @@ class BaseEnvironment(gym.Env, ABC):
 
     def _update(self) -> None:
         """Updates the environment at each time-step. Can be customized in sub-classes."""
-        [obst.update(dt=self.config["t_step_size"], agent_position=self.vessel._state[0:2]) for obst in self.obstacles if not obst.static]
+        [obst.update(dt=self.config["t_step_size"], agent_position=self.vessel._state[0:2], t_step=self.total_t_steps) for obst in self.obstacles if not obst.static]
 
     @abstractmethod
     def _generate(self) -> None:    

@@ -30,10 +30,10 @@ class BaseObstacle(ABC):
         sensors' detection of the obstacle instance."""
         return self._init_boundary
 
-    def update(self, dt:float, agent_position) -> None:
+    def update(self, dt:float, agent_position, t_step) -> None:
         """Updates the obstacle according to its dynamic behavior, e.g. 
         a ship model and recalculates the boundary."""
-        has_changed = self._update(dt, agent_position)
+        has_changed = self._update(dt, agent_position, t_step)
         if has_changed:
             self._boundary = self._calculate_boundary()
             if not self._boundary.is_valid:
@@ -152,9 +152,9 @@ class VesselObstacle(BaseObstacle):
             #self.heading = np.pi/2  # THOMAS 06.08.21 -- FIX VESSEL HEADINGS ON TRAJECORY PLOTS
 
         if init_update:
-            self.update(dt=0.1, agent_position=None)
+            self.update(dt=0.1, agent_position=None, t_step=0)
 
-    def _update(self, dt, agent_position):
+    def _update(self, dt, agent_position, t_step):
         self.waypoint_counter += dt
 
         index = int(np.floor(self.waypoint_counter))
@@ -163,22 +163,41 @@ class VesselObstacle(BaseObstacle):
             self.waypoint_counter = 0
             index = 0
             self.position = np.array(self.trajectory[0][1])
+        
+        # if t_step % 1000 == 0 and t_step != 0:
+            # print(f"----------------------------\nt_step={t_step}")
+        # print(f"t_step={t_step}")
+
+        dx = self.trajectory_velocities[index][0]
+        dy = self.trajectory_velocities[index][1]
 
         if self.straight_line or not isinstance(agent_position, np.ndarray):
-            dx = self.trajectory_velocities[index][0]
-            dy = self.trajectory_velocities[index][1]
             self.dx = dt*dx
             self.dy = dt*dy
+            self.heading = geom.princip(np.arctan2(self.dy, self.dx))
         else:
+            # Decrease epsilon as timestep increases -> better agent gives "smarter" obstacles
+            if self.epsilon == 1.0 and t_step >= 62500: # 62500 = (1 / 3) * (3,000,000 / 16)
+                self.epsilon = 0.99
+                print(f"----------------------------\nEpsilon=0.99, t_step={t_step}")
+            elif self.epsilon == 0.99 and t_step >= 125000: # 125000 = (2 / 3) * (3,000,000 / 16)
+                self.epsilon = 0.98
+                print(f"----------------------------\nEpsilon=0.98, t_step={t_step}")
+
             # Epsilon-Greedy direction selection
             p = np.random.random()
             if p < self.epsilon:
                 pass # Keep the same direction as previously
             else:
-                self.dx = agent_position[0] - self.position[0]
-                self.dy = agent_position[1] - self.position[1]
+                dir_x = agent_position[0] - self.position[0]
+                dir_y = agent_position[1] - self.position[1]
+                self.heading = geom.princip(np.arctan2(dir_x, dir_y))
+
+                speed = np.sqrt(dx**2 + dy**2)
+
+                self.dx = dt*speed*np.cos(self.heading)
+                self.dx = dt*speed*np.sin(self.heading)
             
-        self.heading = geom.princip(np.arctan2(self.dy, self.dx))
         self.position = self.position + np.array([self.dx, self.dy])
         self._prev_position.append(self.position)
         self._prev_heading.append(self.heading)

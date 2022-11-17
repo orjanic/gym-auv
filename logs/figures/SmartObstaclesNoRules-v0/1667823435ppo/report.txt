@@ -1,0 +1,13 @@
+# PERFORMANCE METRICS (LAST 100 EPISODES AVG.)
+Episodes                      100                           
+Avg. Reward                   -1194.34                      
+Std. Reward                   1176.65                       
+Avg. Progress                 94.70%                        
+Avg. Collisions               0.05                          
+No Collisions                 95.00%                        
+Avg. Cross-Track Error        81.45                         
+Avg. Timesteps                1152.11                       
+Avg. Duration                 1152.11                       
+Avg. Pathlength               940.29                        
+Avg. Speed                    1.48                          
+Max. Speed                    63.13                         

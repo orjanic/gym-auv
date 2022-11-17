@@ -1,0 +1,180 @@
+SmartObstaclesNoRules-v0
+    1667142395ppo
+        Timesteps: 3000000
+        Epsilon: 1
+        Static Obstacles: 11
+        Moving Obstacles: 0
+        Smart Obstacles: 17
+    1667223815ppo
+        Timesteps: 3000000
+        Epsilon: 0.99
+        Static Obstacles: 11
+        Moving Obstacles: 0
+        Smart Obstacles: 17
+    1667250407ppo
+        Timesteps: 3000000
+        Epsilon: 0.99
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+    1667318160ppo # Baseline
+        Timesteps: 3000000
+        Epsilon: 1.0
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1667930787ppo
+                1668707231ppo (Just to duoble check results, oog det ble likt)
+            SmartObstaclesNoRules-v0:
+                1668009411ppo
+                1668678048ppo (Compared with agent 1668608333ppo)
+    1667381060ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            self.reward_limit = -1500
+            if agent_last_reward > self.reward_limit:
+                self.epsilon -= 0.005
+                self.reward_limit += 250
+        )
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+    1667415967ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            if t_step >= 125000: # (2 / 3) * (3,000,000 / 16)
+                self.epsilon = 0.98
+            elif t_step >= 62500: # (1 / 3) * (3,000,000 / 16)
+                self.epsilon = 0.99
+        )
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+    1667823435ppo # Working
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            if self.straight_line or not isinstance(agent_position, np.ndarray):
+                ...
+            else:
+                if self.epsilon == 1.0 and t_step >= 62500: # 62500 = (1 / 3) * (3,000,000 / 16)
+                    self.epsilon = 0.99
+                elif self.epsilon == 0.99 and t_step >= 125000: # 125000 = (2 / 3) * (3,000,000 / 16)
+                    self.epsilon = 0.98
+        )
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1667934361ppo
+            SmartObstaclesNoRules-v0:
+                1668012856ppo
+    1667986853ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            if self.straight_line or not isinstance(agent_position, np.ndarray):
+                ...
+            else:
+                if self.epsilon == 1.0 and t_step >= 62500: # 62500 = (1 / 3) * (3,000,000 / 16)
+                    self.epsilon = 0.995
+                elif self.epsilon == 0.995 and t_step >= 125000: # 125000 = (2 / 3) * (3,000,000 / 16)
+                    self.epsilon = 0.99
+        )
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+    1668173524ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.9 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.1
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1668341023ppo
+            SmartObstaclesNoRules-v0: epsilon=0.9
+                1668344909ppo
+    1668350494ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.8 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.1
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1668419189ppo
+            SmartObstaclesNoRules-v0:
+    1668423979ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.7 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.1
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+            SmartObstaclesNoRules-v0:
+    1668498179ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.7 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1668586444ppo
+                    escape: ep1, ep5, ep10
+            SmartObstaclesNoRules-v0:
+    1668520511ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.7 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 0
+        Smart Obstacles: 17
+        tests:
+            MovingObstaclesNoRules-v0:
+                1668592701ppo
+            SmartObstaclesNoRules-v0:
+    1668608333ppo # BEST
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.8 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1668670652ppo
+            SmartObstaclesNoRules-v0:
+                1668674468ppo
+    1668682081ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.9 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1668703803ppo
+            SmartObstaclesNoRules-v0:

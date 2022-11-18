@@ -181,13 +181,15 @@ class VesselObstacle(BaseObstacle):
                 dir_x = agent_position[0] - self.position[0]
                 dir_y = agent_position[1] - self.position[1]
 
-                heading_towards_agent = geom.princip(np.arctan2(dir_x, dir_y))
+                heading_towards_agent = geom.princip(np.arctan2(dir_y, dir_x))
                 self.heading = self._calculate_heading(heading_towards_agent)
 
                 speed = np.sqrt(dx**2 + dy**2)
 
                 self.dx = dt*speed*np.cos(self.heading)
-                self.dx = dt*speed*np.sin(self.heading)
+                self.dy = dt*speed*np.sin(self.heading)
+
+                # print(f"AgentPos={(round(agent_position[0], 2), round(agent_position[1], 2))}".ljust(27) + f", ObstPos={(round(self.position[0], 2), round(self.position[1], 2))}".ljust(27) + f", ObstPosChange={(round(self.dx, 2), round(self.dy, 2))}, Speed:{round(speed, 2)}, Heading={round(self.heading*180/np.pi, 0)}, HeadingTowards={round(heading_towards_agent*180/np.pi, 0)}")
             
         self.position = self.position + np.array([self.dx, self.dy])
         self._prev_position.append(self.position)
@@ -214,4 +216,3 @@ class VesselObstacle(BaseObstacle):
         new_heading = (new_heading + np.pi) % (2 * np.pi) - np.pi
 
         return new_heading
-

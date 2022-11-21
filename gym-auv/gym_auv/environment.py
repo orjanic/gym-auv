@@ -230,6 +230,12 @@ class BaseEnvironment(gym.Env, ABC):
         # Testing criteria for ending the episode
         done = self._isdone()
 
+        # Slice trajectory down to actually travelled trajectory when finished
+        if done:
+            for obst in self.obstacles:
+                if not obst.static:
+                    obst.trajectory = obst.trajectory[:self.t_step]
+
         self._save_latest_step()
 
         self.t_step += 1

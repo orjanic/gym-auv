@@ -109,8 +109,6 @@ class VesselObstacle(BaseObstacle):
         self.trajectory_velocities = []
         self.name = name
         self.epsilon = epsilon
-        if epsilon != 1.0:
-            self.color = color=(0.6, 0, 0)
 
         i = 0
         while i < len(trajectory)-1:
@@ -151,6 +149,8 @@ class VesselObstacle(BaseObstacle):
             self.heading = geom.princip(np.arctan2(self.dy0, self.dx0))
             self.init_heading = geom.princip(np.arctan2(self.dy0, self.dx0))
             #self.heading = np.pi/2  # THOMAS 06.08.21 -- FIX VESSEL HEADINGS ON TRAJECORY PLOTS
+        
+        self.p = np.random.random(size=len(self.trajectory))
 
         if init_update:
             self.update(dt=0.1, agent_position=None)
@@ -174,8 +174,7 @@ class VesselObstacle(BaseObstacle):
             self.heading = geom.princip(np.arctan2(self.dy, self.dx))
         else:
             # Epsilon-Greedy direction selection
-            p = np.random.random()
-            if p < self.epsilon:
+            if self.p[index] < self.epsilon:
                 pass # Keep the same direction as previously
             else:
                 dir_x = agent_position[0] - self.position[0]
@@ -184,17 +183,19 @@ class VesselObstacle(BaseObstacle):
                 heading_towards_agent = geom.princip(np.arctan2(dir_y, dir_x))
                 self.heading = self._calculate_heading(heading_towards_agent)
 
-                speed = np.sqrt(dx**2 + dy**2)
+            speed = np.sqrt(dx**2 + dy**2)
+            self.dx = dt*speed*np.cos(self.heading)
+            self.dy = dt*speed*np.sin(self.heading)
 
-                self.dx = dt*speed*np.cos(self.heading)
-                self.dy = dt*speed*np.sin(self.heading)
-
-                # print(f"AgentPos={(round(agent_position[0], 2), round(agent_position[1], 2))}".ljust(27) + f", ObstPos={(round(self.position[0], 2), round(self.position[1], 2))}".ljust(27) + f", ObstPosChange={(round(self.dx, 2), round(self.dy, 2))}, Speed:{round(speed, 2)}, Heading={round(self.heading*180/np.pi, 0)}, HeadingTowards={round(heading_towards_agent*180/np.pi, 0)}")
+            # Update the preplaned trajectory, to plot correct trajectory for smart obstacles
+            trajectory_list = list(self.trajectory[index])
+            trajectory_list[1] = tuple(self.position + np.array([self.dx, self.dy]))
+            self.trajectory[index] = tuple(trajectory_list)
             
         self.position = self.position + np.array([self.dx, self.dy])
         self._prev_position.append(self.position)
         self._prev_heading.append(self.heading)
-
+        
         return True
 
     def _calculate_boundary(self):

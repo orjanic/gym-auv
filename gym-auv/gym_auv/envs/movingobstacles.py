@@ -63,7 +63,7 @@ class MovingObstacles(BaseEnvironment):
                 )))
             
             if obst < self._n_smart_obst:
-                epsilon = 0.9 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+                epsilon = 0.8 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
                 other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory, epsilon=epsilon)
             else:
                 other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
@@ -85,7 +85,7 @@ class MovingObstaclesNoRules(MovingObstacles):
         self._n_smart_obst = 0
         self._n_moving_obst = 17
         self._n_static_obst = 11
-        self._rewarder_class = ColavRewarder  # PathRewarder
+        self._rewarder_class = ColavRewarder
         super().__init__(*args, **kwargs)
 
 class SmartObstaclesNoRules(MovingObstacles):

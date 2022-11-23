@@ -77,9 +77,9 @@ def report(env, report_dir, lastn=100):
         plt.axis('scaled')
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        ax.plot(collisions, color='blue', linewidth=0.5, alpha=0.2, label='Collisions')
+        ax.plot(collisions, color='blue', linewidth=0.5, alpha=0.2)#, label='Collisions')
         ax.plot(smoothed_collisions, color='blue', linewidth=1, alpha=0.4)
-        ax.set_title('Collisions')
+        # ax.set_title('Collisions')
         ax.set_ylabel(r"Collisions")
         ax.set_xlabel(r"Episode")
         ax.legend()
@@ -490,7 +490,8 @@ def plot_scenario(env, fig_dir, fig_postfix='', show=True):
             if isinstance(obst, VesselObstacle):
                 x_arr = [elm[1][0] for elm in obst.trajectory]
                 y_arr = [elm[1][1] for elm in obst.trajectory]
-                ax.plot(x_arr, y_arr, dashes=[6, 2], color='red', linewidth=0.5, alpha=0.3)
+                if obst.epsilon == 1:
+                    ax.plot(x_arr, y_arr, dashes=[6, 2], color='red', linewidth=0.5, alpha=0.3)
 
             plt.arrow(
                 obst.boundary.centroid.coords[0][0],

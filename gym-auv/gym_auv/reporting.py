@@ -87,7 +87,7 @@ def report(env, report_dir, lastn=100):
         fig.savefig(os.path.join(report_dir, 'collisions.pdf'), format='pdf', bbox_inches='tight')
         plt.close(fig)
 
-        cross_track_errors = np.array([obj['cross_track_error'] for obj in env.history])
+        cross_track_errors = np.array([obj['cross_track_error'] for obj in env.history]) * 10 # Resize to real-world distance by multiplying with 10
         smoothed_cross_track_errors = gaussian_filter1d(cross_track_errors, sigma=100)
         plt.axis('scaled')
         fig = plt.figure()

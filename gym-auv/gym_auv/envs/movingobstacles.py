@@ -29,6 +29,9 @@ class MovingObstacles(BaseEnvironment):
         super().__init__(*args, **kwargs)
 
     def _generate(self):
+        # Create reproducible environments
+        np.random.seed(0)
+
         # Initializing path
         if not hasattr(self, '_n_waypoints'):
             self._n_waypoints = int(np.floor(4*self.rng.rand() + 2))
@@ -63,8 +66,8 @@ class MovingObstacles(BaseEnvironment):
                 )))
             
             if obst < self._n_smart_obst:
-                epsilon = 0.8 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
-                other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory, epsilon=epsilon)
+                epsilon = 1.0 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+                other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory, epsilon=0)
             else:
                 other_vessel_obstacle = VesselObstacle(width=obst_radius, trajectory=other_vessel_trajectory)
 

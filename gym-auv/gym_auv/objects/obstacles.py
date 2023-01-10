@@ -150,6 +150,7 @@ class VesselObstacle(BaseObstacle):
             self.init_heading = geom.princip(np.arctan2(self.dy0, self.dx0))
             #self.heading = np.pi/2  # THOMAS 06.08.21 -- FIX VESSEL HEADINGS ON TRAJECORY PLOTS
         
+        # np.random.seed(0)
         self.p = np.random.random(size=len(self.trajectory))
 
         if init_update:
@@ -179,8 +180,8 @@ class VesselObstacle(BaseObstacle):
             else:
                 dir_x = agent_position[0] - self.position[0]
                 dir_y = agent_position[1] - self.position[1]
-
                 heading_towards_agent = geom.princip(np.arctan2(dir_y, dir_x))
+                
                 self.heading = self._calculate_heading(heading_towards_agent)
 
             speed = np.sqrt(dx**2 + dy**2)
@@ -208,12 +209,10 @@ class VesselObstacle(BaseObstacle):
         return boundary_temp
     
     def _calculate_heading(self, heading_towards_agent, max_heading_change=0.02):
-        heading_difference = heading_towards_agent - self.heading
-        heading_difference = (heading_difference + np.pi) % (2 * np.pi) - np.pi
+        heading_difference = geom.princip(heading_towards_agent - self.heading)
 
         heading_change = min(heading_difference, max_heading_change) if heading_difference >= 0 else max(heading_difference, - max_heading_change)
 
-        new_heading = self.heading + heading_change
-        new_heading = (new_heading + np.pi) % (2 * np.pi) - np.pi
+        new_heading = geom.princip(self.heading + heading_change)
 
         return new_heading

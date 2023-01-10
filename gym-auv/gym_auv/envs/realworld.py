@@ -202,7 +202,6 @@ class Agdenes(RealWorldEnv):
         self.obstacle_perimeters = np.load('resources/obstacles_entrance.npy')
         # np.load() gave OSError: Failed to interpret file 'resources/terrain.npy' as a pickle
         self.all_terrain = np.fromfile(TERRAIN_DATA_PATH)/7.5
-        
         super()._generate()
 
 class Trondheim(RealWorldEnv):
@@ -213,10 +212,11 @@ class Trondheim(RealWorldEnv):
         super().__init__(*args, **kw)
 
     def _generate(self):
-        self.path = Path([[6945-self.x0, 6329-self.x0], [4254-self.y0, 5614-self.y0]])
+        # self.path = Path([[6945-self.x0, 6329-self.x0], [4254-self.y0, 5614-self.y0]])
+        self.path = Path([[6945-self.x0, 6350-self.x0], [4254-self.y0, 5550-self.y0]])
         self.obstacle_perimeters = np.load('resources/obstacles_trondheim.npy')
         # np.load() gave OSError: Failed to interpret file 'resources/terrain.npy' as a pickle
-        self.all_terrain = np.fromfile(TERRAIN_DATA_PATH)/7.5#[self.x0:8000, self.y0:6900]/7.5
+        self.all_terrain = np.fromfile(TERRAIN_DATA_PATH)/7.5 #[self.x0:8000, self.y0:6900]/7.5
         super()._generate()
 
 class Trondheimsfjorden(RealWorldEnv):
@@ -229,8 +229,8 @@ class Trondheimsfjorden(RealWorldEnv):
     def _generate(self):
         self.path = Path([[520, 1070, 4080, 5473, 10170, 12220], [3330, 5740, 7110, 4560, 7360, 11390]]) #South-west -> north-east
         self.obstacle_perimeters = np.load('resources/obstacles_trondheimsfjorden.npy')
-        self.all_terrain = np.load(TERRAIN_DATA_PATH)/7.5 #[3121:4521, 5890:7390]/7.5
-        
+        # np.load() gave OSError: Failed to interpret file 'resources/terrain.npy' as a pickle
+        self.all_terrain = np.fromfile(TERRAIN_DATA_PATH)/7.5 #[3121:4521, 5890:7390]/7.5
         super()._generate()
 
 class FilmScenario(RealWorldEnv):

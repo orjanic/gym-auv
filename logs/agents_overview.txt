@@ -27,9 +27,17 @@ SmartObstaclesNoRules-v0
             MovingObstaclesNoRules-v0:
                 1667930787ppo
                 1668707231ppo (Just to duoble check results, oog det ble likt)
+                1669120657ppo (Ny intialisering av reproduserbart environment)
             SmartObstaclesNoRules-v0:
                 1668009411ppo
                 1668678048ppo (Compared with agent 1668608333ppo)
+                1669280884ppo (Compared with agent 1669046105ppo)
+            Sorbuoya-v0:
+                1669194450ppo
+            Agdenes-v0:
+                1669283699ppo
+            Trondheim-v0:
+                1669295771ppo
     1667381060ppo
         Timesteps: 3000000
         Epsilon: 1.0 (
@@ -178,3 +186,187 @@ SmartObstaclesNoRules-v0
             MovingObstaclesNoRules-v0:
                 1668703803ppo
             SmartObstaclesNoRules-v0:
+------------------------------------------------------------------------------------------------
+                                 HEADING CALCULATION FIXED
+------------------------------------------------------------------------------------------------
+    1668931806ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.8(0.9?) if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1669019303ppo
+            SmartObstaclesNoRules-v0:
+                1669026306ppo (epsilon=0.8)
+
+    1668953781ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.8 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1669022719ppo
+            SmartObstaclesNoRules-v0:
+                1669032805ppo (epsilon=0.8)
+
+------------------------------------------------------------------------------------------------
+                                SMART OBST MOVING FIXED
+------------------------------------------------------------------------------------------------
+    1669046105ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.8 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1669110465ppo
+            SmartObstaclesNoRules-v0:
+                1669113259ppo
+                1669146963ppo (updated plotting, but black vessels)
+                1669311459ppo (updated plotting, not black vessels, wanted just for plots so not completed)
+            Agdenes-v0:
+                1669311924ppo
+
+    1669067672ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.9 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1669465888ppo
+            SmartObstaclesNoRules-v0:
+            Agdenes-v0:
+                1669362621ppo
+            Trondheim-v0:
+                1669457484ppo
+            Sorbuoya-v0:
+                1669492568ppo
+
+    1669123956ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.0 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=np.pi
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+            SmartObstaclesNoRules-v0:
+    
+    1669150763ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.7 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1669468710ppo
+            SmartObstaclesNoRules-v0:
+                1669488527ppo
+            Agdenes-v0:
+                1669314462ppo
+            Sorbuoya-v0:
+                1669323550ppo
+            Trondheim-v0:
+                1669471575ppo
+    
+    1669150762ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.6 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+            SmartObstaclesNoRules-v0:
+            Agdenes-v0:
+                1669362159ppo
+
+    1669372844ppo (retake)
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.8 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+                1669394878ppo
+            SmartObstaclesNoRules-v0:
+                1669397902ppo
+            Agdenes-v0:
+                1669400757ppo
+            Sorbuoya-v0:
+                1669410196ppo
+            Trondheim-v0:
+                1669449404ppo
+
+    1669535852ppo
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.9 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+        tests:
+            MovingObstaclesNoRules-v0:
+            SmartObstaclesNoRules-v0:
+            Agdenes-v0:
+            Trondheim-v0:
+            Sorbuoya-v0:
+
+    1669898509ppo (plot)
+        Timesteps: 3000000
+        Epsilon: 1.0
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+    
+    1669981154ppo (plot)
+        Timesteps: 3000000
+        Epsilon: 1.0 (
+            epsilon = 0.7 if self.total_t_steps > 93750 else 1.0 # 93750 = (1 / 2) * (3,000,000 / 16)
+        )
+        _calculate_heading: max_heading_change=0.02
+        Static Obstacles: 11
+        Moving Obstacles: 10
+        Smart Obstacles: 7
+
+Har gode plots fra trening:
+    v0: 1667318160ppo -> 1669898509ppo
+    v1: 1669535852ppo
+    v2: 1669372844ppo
+    v3: 1669150763ppo -> 1669981154ppo
+

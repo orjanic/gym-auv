@@ -94,7 +94,7 @@ def report(env, report_dir, lastn=100):
         ax = fig.add_subplot(1, 1, 1)
         ax.plot(cross_track_errors, color='blue', linewidth=0.5, alpha=0.2)
         ax.plot(smoothed_cross_track_errors, color='blue', linewidth=1, alpha=0.4)
-        ax.set_ylabel(r"Avg. Cross-Track Error", fontsize=12)
+        ax.set_ylabel(r"Avg. Cross-Track Error [m]", fontsize=12)
         ax.set_xlabel(r"Episode", fontsize=12)
         ax.tick_params(axis='both', labelsize=12)
         #ax.legend()
